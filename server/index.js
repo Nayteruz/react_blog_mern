@@ -20,15 +20,15 @@ const app = express();
 
 app.use(express.json())
 
-app.post('/auth/register', registerValidation, UserController.register)
-app.post('/auth/login', loginValidation, UserController.login)
-app.get('/auth/me', checkAuth, UserController.getMe)
+app.post('/auth/register', registerValidation, UserController.register);
+app.post('/auth/login', loginValidation, UserController.login);
+app.get('/auth/me', checkAuth, UserController.getMe);
 
-//app.get('/posts', postCreateValidation, PostController.getAll)
-//app.get('/posts/:id', postCreateValidation, PostController.getOne)
-app.post('/posts', postCreateValidation, PostController.create)
-//app.delete('/posts', postCreateValidation, PostController.remove)
-//app.patch('/posts', postCreateValidation, PostController.update)
+app.get('/posts', PostController.getAll);
+app.get('/posts/:id', PostController.getOne);
+app.post('/posts', checkAuth, postCreateValidation, PostController.create);
+app.delete('/posts/:id', checkAuth, PostController.remove);
+app.patch('/posts/:id', checkAuth, PostController.update);
 
 
 app.listen(PORT, (err) => {
