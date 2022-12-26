@@ -1,7 +1,8 @@
 import * as dotenv from 'dotenv'
 dotenv.config()
 
-import express from "express"
+import express from "express";
+import cors from "cors";
 import multer from "multer";
 import mongoose from "mongoose";
 import {registerValidation, loginValidation, postCreateValidation} from "./validations/validations.js";
@@ -15,7 +16,7 @@ mongoose
 	.then(() => console.log('DB ok'))
 	.catch((err) => console.log(`DB error ${err}`))
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 const app = express();
 
 const storage = multer.diskStorage({
@@ -30,6 +31,7 @@ const storage = multer.diskStorage({
 const upload = multer({storage});
 
 app.use(express.json())
+app.use(cors());
 app.use('/uploads', express.static('uploads'))
 
 app.post('/auth/register', registerValidation, handleValidationErrors, UserController.register);
@@ -43,6 +45,7 @@ app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
 })
 
 app.get('/posts', PostController.getAll);
+app.get('/tags', PostController.getLastTags);
 app.get('/posts/:id', PostController.getOne);
 app.post('/posts', checkAuth, postCreateValidation, handleValidationErrors, PostController.create);
 app.delete('/posts/:id', checkAuth, PostController.remove);
