@@ -17,5 +17,4 @@ export const postCreateValidation = [
 	body('text', 'Не указан текст статьи').isLength({min:10}).isString(),
 	body('tags', 'Не верный формат тегов (укажите массив)').optional().isString(),
 	body('imageUrl', 'Не верная ссылка на изображение').optional().isString(),
-	
 ]
