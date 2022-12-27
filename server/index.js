@@ -8,6 +8,7 @@ import mongoose from "mongoose";
 import {registerValidation, loginValidation, postCreateValidation} from "./validations/validations.js";
 import {checkAuth, handleValidationErrors} from "./utils/index.js";
 import {UserController, PostController} from "./controllers/index.js";
+import uuid from 'react-uuid';
 
 mongoose
 	.connect(
@@ -19,12 +20,17 @@ mongoose
 const PORT = process.env.PORT || 5000;
 const app = express();
 
+let filenameAfterLoad = '';
+
 const storage = multer.diskStorage({
 	destination: (_, __, cb) => {
 		cb(null, 'uploads');
 	},
 	filename: (_, file, cb) => {
-		cb(null, file.originalname)
+		filenameAfterLoad = '';
+		const filename = uuid();
+		filenameAfterLoad = filename + '.' + file.originalname.replace(/^.+\./, '');
+		cb(null, filenameAfterLoad)
 	}
 })
 
@@ -40,7 +46,7 @@ app.get('/auth/me', checkAuth, UserController.getMe);
 
 app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
 	res.json({
-		url: `/uploads/${req.file.originalname}`,
+		url: `/uploads/${filenameAfterLoad}`,
 	})
 })
 

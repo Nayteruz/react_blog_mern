@@ -9,9 +9,10 @@
   border-radius: 30px;
   margin-right: 10px;
 }
+
 .noavatar {
   border-radius: 50%;
-  background:url("../../../public/user.png") 50% 50% no-repeat #ccc;
+  background: url("../../../public/user.png") 50% 50% no-repeat #ccc;
   background-size: 110%;
 }
 
@@ -29,3 +30,5 @@
   font-size: 12px;
   opacity: 0.6;
 }
+
+/*# sourceMappingURL=UserInfo.module.css.map */
