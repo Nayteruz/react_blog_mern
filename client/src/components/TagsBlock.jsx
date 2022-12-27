@@ -12,29 +12,32 @@ import {SideBlock} from "./SideBlock";
 import {Link} from "react-router-dom";
 
 export const TagsBlock = ({items, isLoading = true}) => {
+	
+	const itemsList = isLoading ? [...Array(5)] : items;
+	
 	return (
 		<SideBlock title="Тэги">
 			<List>
-				{(isLoading ? [...Array(5)] : items).map((name, i) => (
-                    <React.Fragment key={i}>
-					<Link
-						style={{textDecoration: "none", color: "black"}}
-						to={`/tags/${name}`}
-					>
+				{itemsList.map((name, i) => (
+					<React.Fragment key={i.toString()}>
 						<ListItem disablePadding>
-							<ListItemButton>
-								<ListItemIcon>
-									<TagIcon/>
-								</ListItemIcon>
-								{isLoading ? (
-									<Skeleton width={100}/>
-								) : (
-									<ListItemText primary={name}/>
-								)}
-							</ListItemButton>
+							<Link
+								style={{textDecoration: "none", color: "black", width:'100%'}}
+								to={`/tags/${name}`}
+							>
+								<ListItemButton>
+									<ListItemIcon>
+										<TagIcon/>
+									</ListItemIcon>
+									{isLoading ? (
+										<Skeleton width={100}/>
+									) : (
+										<ListItemText primary={name}/>
+									)}
+								</ListItemButton>
+							</Link>
 						</ListItem>
-					</Link>
-                    </React.Fragment>
+					</React.Fragment>
 				))}
 			</List>
 		</SideBlock>

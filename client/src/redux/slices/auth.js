@@ -14,22 +14,30 @@ const initialState = {
 const authSlice = createSlice({
 	name: 'auth',
 	initialState,
-	reducers: {},
-	extraReducers: {
-		[fetchAuth.pending]: (state) => {
+	reducers: {
+		logout: (state) => {
 			state.data = null;
-			state.status = 'loading';
-		},
-		[fetchAuth.fulfilled]: (state, action) => {
-			state.data = action.payload;
-			state.status = 'loaded';
-		},
-		[fetchAuth.rejected]: (state) => {
-			state.data = null;
-			state.status = 'error';
-		},
+		}
+	},
+	extraReducers: (builder) => {
+		builder
+			.addCase(fetchAuth.pending, (state) => {
+				state.data = null;
+				state.status = 'loading';
+			})
+			.addCase(fetchAuth.fulfilled, (state, action) => {
+				state.data = action.payload;
+				state.status = 'loaded';
+			})
+			.addCase(fetchAuth.rejected, (state) => {
+				state.data = null;
+				state.status = 'error';
+			})
 	}
 })
 
+export const selectIsAuth = (state) => Boolean(state.auth.data);
 export const authReducer = authSlice.reducer;
+
+export const {logout} = authSlice.actions;
 

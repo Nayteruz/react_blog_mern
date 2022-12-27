@@ -6,6 +6,25 @@ import {useDispatch, useSelector} from "react-redux";
 import {Post, TagsBlock, CommentsBlock} from "../components";
 import {fetchPosts, fetchTags} from "../redux/slices/posts";
 
+const comments = [
+	{
+		id: 1,
+		user: {
+			fullName: "Вася Пупкин",
+			avatarUrl: "https://mui.com/static/images/avatar/1.jpg",
+		},
+		text: "Это тестовый комментарий",
+	},
+	{
+		id: 2,
+		user: {
+			fullName: "Иван Иванов",
+			avatarUrl: "https://mui.com/static/images/avatar/2.jpg",
+		},
+		text: "When displaying three lines or more, the avatar is not aligned at the top. You should set the prop to align the avatar at the top",
+	},
+]
+
 export const Home = () => {
 	const dispatch = useDispatch();
 	const {posts, tags} = useSelector(state => state.posts);
@@ -34,44 +53,37 @@ export const Home = () => {
 				<Grid xs={8} item>
 					{(isPostLoading ? [...Array(5)] : posts.items).map((post, index) =>
 						isPostLoading ?
-							(<Post key={index} isLoading={true} />)
+							(
+								<React.Fragment key={index.toString()}>
+									<Post isLoading={true} />
+								</React.Fragment>
+							)
 								:
-							(<Post
-								id={post._id}
-								title={post.title}
-								imageUrl={post.imageUrl}
-								user={post.user}
-								createdAt={post.createdAt}
-								viewsCount={post.viewsCount}
-								commentsCount={Math.ceil(Math.random() * 10)}
-								tags={post?.tags}
-								isEditable
-								isLoading={isPostLoading}
-							/>)
+							(
+								<React.Fragment key={post._id}>
+									<Post
+										id={post._id}
+										title={post.title}
+										imageUrl={post.imageUrl}
+										user={post.user}
+										createdAt={post.createdAt}
+										viewsCount={post.viewsCount}
+										commentsCount={Math.ceil(Math.random() * 10)}
+										tags={post?.tags}
+										isEditable
+										isLoading={isPostLoading}
+									/>
+								</React.Fragment>
+							)
 					)}
 				</Grid>
 				<Grid xs={4} item>
 					<TagsBlock
-						items={tags.items ?? []}
+						items={tags.items}
 						isLoading={isTagsLoading}
 					/>
 					<CommentsBlock
-						items={[
-							{
-								user: {
-									fullName: "Вася Пупкин",
-									avatarUrl: "https://mui.com/static/images/avatar/1.jpg",
-								},
-								text: "Это тестовый комментарий",
-							},
-							{
-								user: {
-									fullName: "Иван Иванов",
-									avatarUrl: "https://mui.com/static/images/avatar/2.jpg",
-								},
-								text: "When displaying three lines or more, the avatar is not aligned at the top. You should set the prop to align the avatar at the top",
-							},
-						]}
+						items={comments}
 						isLoading={false}
 					/>
 				</Grid>
