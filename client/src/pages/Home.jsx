@@ -27,6 +27,7 @@ const comments = [
 
 export const Home = () => {
 	const dispatch = useDispatch();
+	const userData = useSelector(state => state.auth.data);
 	const {posts, tags} = useSelector(state => state.posts);
 	
 	const isPostLoading = posts.status === 'loading';
@@ -70,7 +71,7 @@ export const Home = () => {
 										viewsCount={post.viewsCount}
 										commentsCount={Math.ceil(Math.random() * 10)}
 										tags={post?.tags}
-										isEditable
+										isEditable={userData?._id === post.user._id}
 										isLoading={isPostLoading}
 									/>
 								</React.Fragment>

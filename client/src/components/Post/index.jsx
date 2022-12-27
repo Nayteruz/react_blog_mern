@@ -29,7 +29,8 @@ export const Post = ({
 		return <PostSkeleton/>;
 	}
 	
-	const onClickRemove = () => {}
+	const onClickRemove = () => {
+	}
 	
 	return (
 		<div className={clsx(styles.root, {[styles.rootFull]: isFullPost})}>

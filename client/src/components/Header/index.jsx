@@ -13,6 +13,7 @@ export const Header = () => {
 	const onClickLogout = () => {
 		if (window.confirm('Вы действительно хотите выйти?')){
 			dispatch(logout());
+			window.localStorage.removeItem('token');
 		}
 	};
 	
@@ -27,7 +28,7 @@ export const Header = () => {
 						{isAuth ?
 							(
 								<>
-									<Link to="/post/create">
+									<Link to="/add-post">
 										<Button variant="contained">Написать статью</Button>
 									</Link>
 									<Button onClick={onClickLogout} variant="contained" color="error">Войти</Button>
