@@ -1,6 +1,8 @@
 import bcrypt from "bcrypt";
 import UserModel from "../models/User.js";
 import jwt from "jsonwebtoken";
+import multer from "multer";
+import uuid from 'react-uuid';
 
 export const register = async (req, res) => {
 	try {
@@ -85,6 +87,30 @@ export const login = async (req, res) => {
 		console.log(err);
 		res.status(500).json({
 			message: 'Не удалось авторизоваться'
+		})
+	}
+}
+
+export const avatar = async (req, res) => {
+	try {
+		await UserModel.updateOne(
+			{_id: req.body.userId},
+			{
+				$set:
+					{
+						avatarUrl: req.body.avatarUrl
+					}
+			}
+		);
+		
+		res.json({
+			success: true,
+		})
+		
+	} catch (err) {
+		console.log(err);
+		res.status(500).json({
+			message: 'Не удалось загрузить аватар'
 		})
 	}
 }

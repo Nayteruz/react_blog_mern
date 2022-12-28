@@ -1,4 +1,4 @@
-import React, {useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import TextField from "@mui/material/TextField";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
@@ -8,28 +8,30 @@ import "easymde/dist/easymde.min.css";
 import styles from "./AddPost.module.scss";
 import {useSelector} from "react-redux";
 import {selectIsAuth} from "../../redux/slices/auth";
-import {Navigate, useNavigate} from "react-router-dom";
+import {Navigate, useNavigate, useParams} from "react-router-dom";
 import axios from "../../axios";
 
 export const AddPost = () => {
-	
+	const {id} = useParams();
 	const navigate = useNavigate();
 	
-    const isAuth = useSelector(selectIsAuth);
-    
+	const isAuth = useSelector(selectIsAuth);
+	
 	const [isLoading, setIsLoading] = useState(false);
 	const [text, setText] = useState("");
 	const [title, setTitle] = useState("");
 	const [tags, setTags] = useState("");
 	const [imageUrl, setImageUrl] = useState('');
-    const inputFileRef = useRef(null);
+	const inputFileRef = useRef(null);
+	
+	const isEditing = Boolean(id);
 	
 	const onChange = React.useCallback((value) => {
 		setText(value);
 	}, []);
-    
-    const handleChangeFile = async (event) => {
-    	try {
+	
+	const handleChangeFile = async (event) => {
+		try {
 			const formData = new FormData();
 			const file = event.target.files[0];
 			formData.append('image', file)
@@ -39,10 +41,25 @@ export const AddPost = () => {
 			console.warn(err);
 			alert('Ошибка загрузки файла');
 		}
-    }
-    const onCLickRemoveImage = () => {
-    	setImageUrl('');
-    }
+	}
+	const onCLickRemoveImage = () => {
+		setImageUrl('');
+	}
+	
+	useEffect(() => {
+		if (isEditing) {
+			axios.get(`/posts/${id}`).then((res) => {
+				setTitle(res.data.title);
+				setText(res.data.text);
+				setImageUrl(res.data.imageUrl);
+				setTags(res.data.tags.join(', '))
+			})
+				.catch((err) => {
+					console.warn(err);
+					alert("Ошибка при получении статьи")
+				})
+		}
+	}, [])
 	
 	const onSubmit = async () => {
 		try {
@@ -55,11 +72,12 @@ export const AddPost = () => {
 			}
 			
 			setIsLoading(true);
-			const {data} = await axios.post('/posts', fields);
-			console.log(data)
-			const id = data._id;
+			const {data} = isEditing
+				? await axios.patch(`/posts/${id}`, fields)
+				: await axios.post('/posts', fields);
+			const postId = isEditing ? id : data._id;
 			
-			navigate('/posts/' + id);
+			navigate('/posts/' + postId);
 		} catch (err) {
 			console.warn(err)
 			alert('Ошибка при создании статьи!')
@@ -80,18 +98,18 @@ export const AddPost = () => {
 		}),
 		[]
 	);
-    
-    if (!window.localStorage.getItem('token') && !isAuth){
-        return <Navigate to={"/"} />
-    }
+	
+	if (!window.localStorage.getItem('token') && !isAuth) {
+		return <Navigate to={"/"}/>
+	}
 	
 	return (
 		<Paper style={{padding: 30}}>
 			<Button onClick={() => inputFileRef.current.click()} variant="outlined" size="large">
 				Загрузить превью
 			</Button>
-            <input ref={inputFileRef} type="file" onChange={handleChangeFile} hidden/>
-			{imageUrl &&(
+			<input ref={inputFileRef} type="file" onChange={handleChangeFile} hidden/>
+			{imageUrl && (
 				<div className={styles.imageWrap}>
 					<Button onClick={onCLickRemoveImage} color="error" variant="contained">
 						Удалить
@@ -103,16 +121,16 @@ export const AddPost = () => {
 				classes={{root: styles.title}}
 				variant="standard"
 				placeholder="Заголовок статьи..."
-                value={title}
-                onChange={e => setTitle(e.target.value)}
+				value={title}
+				onChange={e => setTitle(e.target.value)}
 				fullWidth
 			/>
 			<TextField
 				classes={{root: styles.tags}}
 				variant="standard"
 				placeholder="Тэги"
-                value={tags}
-                onChange={e => setTags(e.target.value)}
+				value={tags}
+				onChange={e => setTags(e.target.value)}
 				fullWidth
 			/>
 			<SimpleMDE
@@ -123,7 +141,7 @@ export const AddPost = () => {
 			/>
 			<div className={styles.buttons}>
 				<Button onClick={onSubmit} type="submit" size="large" variant="contained">
-					Опубликовать
+					{isEditing ? 'Сохранить' : 'Опубликовать'}
 				</Button>
 				<Button type="clear" size="large">Отмена</Button>
 			</div>

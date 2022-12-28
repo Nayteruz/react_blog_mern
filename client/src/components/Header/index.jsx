@@ -31,7 +31,7 @@ export const Header = () => {
 									<Link to="/add-post">
 										<Button variant="contained">Написать статью</Button>
 									</Link>
-									<Button onClick={onClickLogout} variant="contained" color="error">Войти</Button>
+									<Button onClick={onClickLogout} variant="contained" color="error">Выйти</Button>
 								</>
 							)
 							:

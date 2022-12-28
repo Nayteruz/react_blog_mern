@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {Link} from "react-router-dom";
 import clsx from "clsx";
 import IconButton from "@mui/material/IconButton";
@@ -29,13 +29,15 @@ export const Post = ({
 					 }) => {
 	
 	const dispatch = useDispatch();
+	const [isRemoving, setIsRemoving] = useState(false);
 	
-	if (isLoading) {
+	if (isLoading || isRemoving) {
 		return <PostSkeleton/>;
 	}
 	
 	const onClickRemove = () => {
 		if (window.confirm('Вы действительно хотите удалить статью?')){
+			setIsRemoving(true);
 			dispatch(fetchRemovePost(id));
 		}
 	}
