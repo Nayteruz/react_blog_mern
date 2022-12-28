@@ -13,6 +13,8 @@ export const CommentsBlock = ({items, children, isLoading = true}) => {
 	
 	const listItems = isLoading ? [...Array(5)] : items;
 	
+	// Todo Добавить комментарии и сделать последние комментарии
+	
 	return (
 		<SideBlock title="Комментарии">
 			<List>

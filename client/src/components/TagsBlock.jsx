@@ -15,6 +15,8 @@ export const TagsBlock = ({items, isLoading = true}) => {
 	
 	const itemsList = isLoading ? [...Array(5)] : items;
 	
+	// Todo сделать страницу с просмотром по выбранному тегу.
+	
 	return (
 		<SideBlock title="Тэги">
 			<List>
